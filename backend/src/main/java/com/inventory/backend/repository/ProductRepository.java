@@ -1,18 +1,18 @@
 package com.inventory.backend.repository;
 
+import com.inventory.backend.model.Product;
+
 import java.util.List;
 import java.util.Optional;
-
-import com.inventory.backend.model.Product;
 
 public interface ProductRepository {
     Product save(Product product);
 
-    Optional<Product> findById(int id);
+    Optional<Product> findById(Integer id);
 
     List<Product> findAll();
 
-    void deleteById(int id);
+    void deleteById(Integer id);
 
-    boolean existsById(int id);
+    boolean existsById(Integer id);
 }

@@ -21,7 +21,7 @@ public class Product {
     private String category;
 
     @NotNull(message = "Unit Price is required")
-    @DecimalMin(value = "0.01", message = "Price can not be negative or zero")
+    @DecimalMin(value = "0.01", message = "Price must be greater than 0.01")
     private BigDecimal unitPrice;
 
     @FutureOrPresent(message = "Expiration Date can not be in the past")

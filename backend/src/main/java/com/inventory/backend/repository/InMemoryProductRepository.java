@@ -20,7 +20,7 @@ public class InMemoryProductRepository implements ProductRepository {
     @Override
     public Product save(Product product) {
         if (product.getId() == null) {
-            int newId = idCounter.incrementAndGet();
+            Integer newId = idCounter.incrementAndGet();
             product.setId(newId);
             product.setCreationDate(LocalDate.now());
             product.setUpdateDate(LocalDate.now());
@@ -33,14 +33,14 @@ public class InMemoryProductRepository implements ProductRepository {
                 product.setUpdateDate(LocalDate.now());
                 products.put(product.getId(), product);
             } else {
-                throw new IllegalArgumentException("Product " + product.getId() + " not found");
+                throw new IllegalArgumentException("Product with ID " + product.getId() + " not found");
             }
         }
         return product;
     }
 
     @Override
-    public Optional<Product> findById(int id) {
+    public Optional<Product> findById(Integer id) {
         return Optional.ofNullable(products.get(id));
     }
 
@@ -50,12 +50,12 @@ public class InMemoryProductRepository implements ProductRepository {
     }
 
     @Override
-    public void deleteById(int id) {
+    public void deleteById(Integer id) {
         products.remove(id);
     }
 
     @Override
-    public boolean existsById(int id) {
+    public boolean existsById(Integer id) {
         return products.containsKey(id);
     }
 }
