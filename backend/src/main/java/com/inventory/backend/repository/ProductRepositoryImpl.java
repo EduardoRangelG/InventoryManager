@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class InMemoryProductRepository implements ProductRepository {
+public class ProductRepositoryImpl implements ProductRepository {
     private final Map<Integer, Product> products = new ConcurrentHashMap<>();
     private final AtomicInteger idCounter = new AtomicInteger();
 
