@@ -50,12 +50,19 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
+    public boolean existsById(Integer id) {
+        return products.containsKey(id);
+    }
+
+    @Override
     public void deleteById(Integer id) {
         products.remove(id);
     }
 
     @Override
-    public boolean existsById(Integer id) {
-        return products.containsKey(id);
+    public void deleteAll() {
+        products.clear();
+        idCounter.set(0);
     }
+
 }

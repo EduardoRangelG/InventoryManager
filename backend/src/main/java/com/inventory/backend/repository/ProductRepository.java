@@ -12,7 +12,9 @@ public interface ProductRepository {
 
     List<Product> findAll();
 
+    boolean existsById(Integer id);
+
     void deleteById(Integer id);
 
-    boolean existsById(Integer id);
+    void deleteAll();
 }

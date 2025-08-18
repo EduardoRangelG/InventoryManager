@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Order;
+import org.springframework.stereotype.Service;
 
 import com.inventory.backend.model.Product;
 import com.inventory.backend.repository.ProductRepository;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Service
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final Validator validator;
