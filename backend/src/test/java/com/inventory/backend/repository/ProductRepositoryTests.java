@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.*;
 @SpringBootTest
 public class ProductRepositoryTests {
     @Autowired
-    private ProductRepository productRepository;
+    private ProductRepositoryImpl productRepository;
 
     @BeforeEach
     public void setUp() {
@@ -37,7 +37,7 @@ public class ProductRepositoryTests {
         Product savedProduct = productRepository.save(product);
 
         assertThat(savedProduct).isNotNull();
-        assertThat(savedProduct.getId()).isGreaterThan(0);
+        assertThat(savedProduct.getId()).isEqualTo(1);
     }
 
     @Test
