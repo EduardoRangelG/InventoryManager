@@ -3,7 +3,6 @@ package com.inventory.backend.service;
 import com.inventory.backend.model.Product;
 import com.inventory.backend.repository.ProductRepository;
 import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
