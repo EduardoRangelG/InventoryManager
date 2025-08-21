@@ -1,21 +1,21 @@
 import { useState } from "react";
 import "./ProductSearch.css";
 
-export type SearchData = {
+export interface SearchData {
   name: string;
   category: string;
   availability: string;
-};
+}
 
-type CategoryOption = {
+interface CategoryOption {
   value: string;
   label: string;
-};
+}
 
-type ProductSearchProps = {
+interface ProductSearchProps {
   onSearch: (data: SearchData) => void;
   categories?: CategoryOption[];
-};
+}
 
 function ProductSearch({ onSearch, categories = [] }: ProductSearchProps) {
   const [searchData, setSearchData] = useState({
