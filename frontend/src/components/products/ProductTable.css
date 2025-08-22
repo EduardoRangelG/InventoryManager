@@ -1,0 +1,198 @@
+.create-product {
+  font-size: 14px;
+  font-weight: bold;  
+  background-color: #019c16;
+  color: #ffffff;
+  margin-right: auto;
+  margin-top: 3%;
+  display: block;
+  transition: background-color 0.3s ease;
+  height: 40px;
+}
+
+.create-product:hover {
+  background-color: #007d11;
+  border-color: transparent;
+}
+
+.product-table {
+  width: 100%;
+  margin-top: 2%;
+  border-spacing: 0;
+  border-collapse: collapse;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.product-table th {
+  cursor: pointer;
+  white-space: nowrap;
+  padding-right: 10px;
+}
+
+.th-category {
+  width: 100px;
+}
+
+.th-name {
+  width: 250px;
+}
+
+.th-price {
+  width: 100px;
+}
+
+.th-date {
+  width: 150px;
+}
+
+.th-stock {
+  width: 70px;
+}
+
+.product-table tr:first-child th:first-child {
+  cursor: default;
+}
+
+.product-table tr:first-child th:last-child {
+  cursor: default;
+}
+
+.product-table tr:first-child th {
+  border-top: none;
+}
+
+.product-table tr:last-child td {
+  border-bottom: none;
+}
+
+.product-table th:first-child,
+.product-table td:first-child {
+    border-left: none;
+    width: 10px;
+}
+
+.product-table th:last-child,
+.product-table td:last-child {
+    border-right: none;
+    width: 180px;
+}
+
+.product-table th,
+.product-table th {
+  background-color: #000000;
+  font-weight: bold;
+}
+
+.product-table th,
+.product-table td {
+  border: 2px solid #7d7d7d;
+  padding: 8px 12px;
+  text-align: left;
+}
+
+/* Style when there are no products */
+.product-table tbody tr.no-products-row td {
+    color: #ffffff;
+    background-color: #000000;
+    font-weight: 600;
+    font-size: 1.5cap;
+    padding: 2rem;
+    text-align: center;
+}
+
+.product-table tbody tr.no-products-row:hover {
+  background-color: transparent;
+}
+
+/* Style when there are products */
+.product-table tr.product-row {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+.product-table tr:hover {
+  background-color: #e6e6e6;
+}
+
+/* Sorting symbols */
+.sort-symbol.order-1 {
+  color: #5ed862;
+}
+
+.sort-symbol.order-2 {
+  color: #319c36;
+}
+
+
+.edit-btn,
+.delete-btn {
+  font-size: 14px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  height: 40px;
+  margin: 0 5px;
+}
+
+.edit-btn {
+  background-color: #007bff;
+  color: #ffffff;
+}
+
+.edit-btn:hover {
+  background-color: #0056b3;
+  border-color: transparent;
+}
+
+.delete-btn {
+  background-color: #f10101;
+  color: #ffffff;
+}
+
+.delete-btn:hover {
+  background-color: #b40000;
+  border-color: transparent;
+}
+
+/* Out of Stock or Stock less than 5 - Color: Red */
+.out-of-stock {
+  background-color: #e90a0a;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-skip-ink: none;
+  text-decoration-thickness: 2px;
+  text-underline-offset: -45%;
+}
+
+.low-stock {
+  background-color: #e90a0a;
+  font-weight: 600;
+}
+
+.out-of-stock:hover,
+.low-stock:hover {
+  background-color: #d90f23;
+}
+
+/* Stock between 5 and 10 - Color: Orange */
+.medium-stock {
+  background-color: #ffa600;
+  font-weight: 600;
+}
+
+.medium-stock:hover {
+  background-color: #f09000;
+}
+
+/* Stock bigger than 10 - No Color */
+.high-stock {
+  font-weight: 600;
+}
+
+.high-stock:hover {
+  background-color: #cfcece;
+}
+
+@media (max-width: 768px) {
+
+}

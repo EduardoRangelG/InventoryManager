@@ -14,6 +14,7 @@ import jakarta.validation.Validator;
 
 import java.util.Optional;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -104,17 +105,17 @@ public class ProductServiceImpl implements ProductService {
             boolean matchesCategory = (category == null || category.isEmpty())
                     || product.getCategory().toLowerCase().contains(category.toLowerCase());
             boolean matchesInStock = (inStock == null) ||
-                    (inStock && product.getStock() > 0);
+                    (inStock && product.getStock() >= 0);
             return matchesName && matchesCategory && matchesInStock;
         }).collect(Collectors.toList());
 
         // Sorting Logic
-        Comparator<Product> comparator = null;
-        if (pageable.getSort().isSorted()) {
-            Optional<Order> orderOptional = pageable.getSort().stream().findFirst();
 
-            if (orderOptional.isPresent()) {
-                Order order = orderOptional.get();
+        if (pageable.getSort().isSorted()) {
+            List<Comparator<Product>> comparators = new ArrayList<>();
+
+            for (Order order : pageable.getSort()) {
+                Comparator<Product> comparator = null;
 
                 switch (order.getProperty()) {
                     case "name":
@@ -140,13 +141,16 @@ public class ProductServiceImpl implements ProductService {
                 if (order.isDescending()) {
                     comparator = comparator.reversed();
                 }
+                comparators.add(comparator);
             }
-        } else {
-            comparator = null;
-        }
 
-        if (comparator != null) {
-            filteredProducts.sort(comparator);
+            if (!comparators.isEmpty()) {
+                Comparator<Product> finalComparator = comparators.get(0);
+                for (int i = 0; i < comparators.size(); i++) {
+                    finalComparator = finalComparator.thenComparing(comparators.get(i));
+                }
+                filteredProducts.sort(finalComparator);
+            }
         }
 
         // Pagination Logic

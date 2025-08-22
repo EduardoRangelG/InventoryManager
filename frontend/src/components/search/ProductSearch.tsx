@@ -4,7 +4,7 @@ import "./ProductSearch.css";
 export interface SearchData {
   name: string;
   category: string;
-  availability: string;
+  availability: "in-stock" | "out-of-stock" | "";
 }
 
 interface CategoryOption {
@@ -18,7 +18,7 @@ interface ProductSearchProps {
 }
 
 function ProductSearch({ onSearch, categories = [] }: ProductSearchProps) {
-  const [searchData, setSearchData] = useState({
+  const [searchData, setSearchData] = useState<SearchData>({
     name: "",
     category: "",
     availability: "",

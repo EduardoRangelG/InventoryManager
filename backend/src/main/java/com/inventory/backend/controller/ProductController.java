@@ -77,7 +77,7 @@ public class ProductController {
 
     // PUT product instock by ID /products/{id}/instock
     @PutMapping("/{id}/instock")
-    public ResponseEntity<Product> markProductInStock(@PathVariable Integer id, @RequestBody Integer quantity) {
+    public ResponseEntity<Product> markProductInStock(@PathVariable Integer id, @RequestParam Integer quantity) {
         Product updatedProduct = productService.markProductInStock(id, quantity);
         return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
     }

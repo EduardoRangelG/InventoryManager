@@ -3,7 +3,7 @@
   background-color: #f5f5f5;
   padding: 20px;
   border-radius: 15px;
-  width: 100%;
+
 }
 
 /* Container for select fields */
@@ -41,7 +41,7 @@
 .select-field select:focus {
   outline: none;
   border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+  box-shadow: 0 0 0 2px #0077ff5c;
 }
 
 /* Input field */
@@ -79,14 +79,14 @@
   padding: 20px;
   border: none;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: bold;
   transition: background-color 0.3s ease;
-  height: 50px;
+  height: 40px;
 }
 
 .search-btn {
   background-color: #007bff;
-  color: white;
+  color: #ffffff;
   margin-left: auto;
 }
 
@@ -96,7 +96,7 @@
 
 .clear-btn {
   background-color: #f10101;
-  color: white;
+  color: #ffffff;
 }
 
 .clear-btn:hover {
