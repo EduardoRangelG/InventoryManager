@@ -10,7 +10,7 @@ export interface Product {
 export interface GetProductsParams {
   name: string;
   category: string;
-  availability: "in-stock" | "out-of-stock";
+  availability: "in-stock" | "out-of-stock" | "";
   page?: number;
   limit?: number;
   sort?: string[];

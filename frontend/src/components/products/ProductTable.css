@@ -190,7 +190,7 @@
   background-color: #cfcece;
 }
 
-/* Pagination controls styles */
+/* Pagination Controls styles */
 .pagination-btn {
   background-color: #2882a6;
   font-weight: bold;
@@ -204,6 +204,7 @@
 
 .pagination-btn.active {
   box-shadow: inset 0 0 0 2px #efefef;
+  cursor: default;
 }
 
 .pagination-btn-simple {

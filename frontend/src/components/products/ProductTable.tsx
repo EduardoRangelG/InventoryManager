@@ -251,7 +251,7 @@ function ProductTable({
             <button
               key={pageNumber}
               onClick={() => onPageChange(pageNumber)}
-              disabled={loading}
+              disabled={loading || pageNumber === currentPage}
               className={`pagination-btn ${
                 pageNumber === currentPage ? "active" : ""
               }`}

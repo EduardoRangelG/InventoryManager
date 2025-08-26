@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+import type { Product } from "./types/product";
 import ProductSearch from "./components/search/ProductSearch";
 import type { SearchData } from "./components/search/ProductSearch";
 import ProductTable from "./components/products/ProductTable";
@@ -9,14 +11,13 @@ import {
   createProduct,
   updateProduct,
 } from "./services/products";
-import "./App.css";
-import { useState, useEffect } from "react";
 import {
   type SortCriteria,
   type GetProductsParams,
   type GetProductsResponse,
 } from "./types/product";
-import type { Product } from "./types/product";
+import ProductMetrics from "./components/metrics/ProductMetrics";
+import "./App.css";
 
 export interface CategoryOption {
   value: string;
@@ -35,7 +36,7 @@ function App() {
   const [searchParams, setSearchParams] = useState<GetProductsParams>({
     name: "",
     category: "",
-    availability: "in-stock",
+    availability: "",
     page: 1,
     limit: 10,
     sort: ["name,asc"],
@@ -88,8 +89,7 @@ function App() {
       ...searchParams,
       name: searchData.name,
       category: searchData.category,
-      availability:
-        searchData.availability === "" ? "in-stock" : searchData.availability,
+      availability: searchData.availability,
       page: 1,
     });
   };
@@ -227,6 +227,7 @@ function App() {
         onBulkStockUpdate={handleBulkStock}
         loading={loading}
       />
+      <ProductMetrics></ProductMetrics>
     </>
   );
 }

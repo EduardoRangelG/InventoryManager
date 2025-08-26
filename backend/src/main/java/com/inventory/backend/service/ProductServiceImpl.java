@@ -103,8 +103,14 @@ public class ProductServiceImpl implements ProductService {
                     || product.getName().toLowerCase().contains(name.toLowerCase());
             boolean matchesCategory = (category == null || category.isEmpty())
                     || product.getCategory().toLowerCase().contains(category.toLowerCase());
-            boolean matchesInStock = (inStock == null) ||
-                    (inStock && product.getStock() >= 0);
+            boolean matchesInStock;
+            if (inStock == null) {
+                matchesInStock = true; // No filter, match all
+            } else if (inStock) {
+                matchesInStock = product.getStock() > 0; // Filter for In Stock (stock > 0)
+            } else {
+                matchesInStock = product.getStock() == 0; // Filter for Out of Stock (stock = 0)
+            }
             return matchesName && matchesCategory && matchesInStock;
         }).collect(Collectors.toList());
 

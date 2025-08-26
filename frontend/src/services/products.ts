@@ -20,11 +20,10 @@ export const getProducts = async (
 
     if (params.name) searchParams.append("name", params.name);
     if (params.category) searchParams.append("category", params.category);
-    if (params.availability) {
-      searchParams.append(
-        "inStock",
-        params.availability === "out-of-stock" ? "false" : "true"
-      );
+    if (params.availability === "in-stock") {
+      searchParams.append("inStock", "true");
+    } else if (params.availability === "out-of-stock") {
+      searchParams.append("inStock", "false");
     }
     if (params.page) searchParams.append("page", (params.page - 1).toString());
     if (params.limit) searchParams.append("size", params.limit.toString());
