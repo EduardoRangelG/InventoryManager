@@ -14,7 +14,6 @@ import jakarta.validation.Validator;
 
 import java.util.Optional;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -110,45 +109,46 @@ public class ProductServiceImpl implements ProductService {
         }).collect(Collectors.toList());
 
         // Sorting Logic
-
         if (pageable.getSort().isSorted()) {
-            List<Comparator<Product>> comparators = new ArrayList<>();
+            List<Order> orders = pageable.getSort().toList();
+            Comparator<Product> finalComparator = null;
 
-            for (Order order : pageable.getSort()) {
-                Comparator<Product> comparator = null;
+            for (Order order : orders) {
+                Comparator<Product> currentComparator = null;
 
                 switch (order.getProperty()) {
                     case "name":
-                        comparator = Comparator.comparing(Product::getName);
+                        currentComparator = Comparator.comparing(Product::getName);
                         break;
                     case "category":
-                        comparator = Comparator.comparing(Product::getCategory);
+                        currentComparator = Comparator.comparing(Product::getCategory);
                         break;
                     case "unitPrice":
-                        comparator = Comparator.comparing(Product::getUnitPrice);
+                        currentComparator = Comparator.comparing(Product::getUnitPrice);
                         break;
                     case "stock":
-                        comparator = Comparator.comparing(Product::getStock);
+                        currentComparator = Comparator.comparing(Product::getStock);
                         break;
                     case "expirationDate":
-                        comparator = Comparator.comparing(Product::getExpirationDate,
+                        currentComparator = Comparator.comparing(Product::getExpirationDate,
                                 Comparator.nullsLast(LocalDate::compareTo));
                         break;
-                    default:
-                        comparator = Comparator.comparing(Product::getName);
                 }
 
-                if (order.isDescending()) {
-                    comparator = comparator.reversed();
+                if (currentComparator != null) {
+                    if (order.isDescending()) {
+                        currentComparator = currentComparator.reversed();
+                    }
+
+                    if (finalComparator == null) {
+                        finalComparator = currentComparator;
+                    } else {
+                        finalComparator = finalComparator.thenComparing(currentComparator);
+                    }
                 }
-                comparators.add(comparator);
             }
 
-            if (!comparators.isEmpty()) {
-                Comparator<Product> finalComparator = comparators.get(0);
-                for (int i = 0; i < comparators.size(); i++) {
-                    finalComparator = finalComparator.thenComparing(comparators.get(i));
-                }
+            if (finalComparator != null) {
                 filteredProducts.sort(finalComparator);
             }
         }

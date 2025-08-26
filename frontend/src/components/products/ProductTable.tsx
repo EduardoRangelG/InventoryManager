@@ -1,10 +1,16 @@
 import { useEffect, useState } from "react";
 import type { Product, SortCriteria } from "../../types/product";
+import type { CategoryOption } from "../../App";
 import { formatUTCDate } from "../../utils/dateFormatter";
+import ProductModal from "./modal/ProductModal";
 import "./ProductTable.css";
 
 interface ProductTableProps {
   products: Product[];
+  categories: CategoryOption[];
+  onCreateProduct: (product: Omit<Product, "id">) => void;
+  onEditProduct: (product: Product) => void;
+  onDeleteProduct: (productId: number) => void;
   onSortingColumn: (columnName: string) => void;
   sortCriteria: SortCriteria[];
   onSingleStockUpdate: (productId: number, makeOutOfStock: boolean) => void;
@@ -14,6 +20,10 @@ interface ProductTableProps {
 
 function ProductTable({
   products = [],
+  categories = [],
+  onCreateProduct,
+  onEditProduct,
+  onDeleteProduct,
   onSortingColumn,
   sortCriteria,
   onSingleStockUpdate,
@@ -21,6 +31,9 @@ function ProductTable({
   loading,
 }: ProductTableProps) {
   const [allSelected, setAllSelected] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState("");
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   // Header checkbox logic
   useEffect(() => {
@@ -33,6 +46,34 @@ function ProductTable({
     }
   }, [products]);
 
+  // Modals logic
+
+  const openCreateModal = () => {
+    setModalContent("create");
+    setSelectedProduct(null);
+    setIsModalOpen(true);
+  };
+
+  const openEditModal = (product: Product) => {
+    setModalContent("edit");
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+  };
+
+  const openDeleteModal = (product: Product) => {
+    setModalContent("delete");
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+
+    setModalContent("");
+    setSelectedProduct(null);
+  };
+
+  // Stock logic
   const handleBulkStock = (isChecked: boolean) => {
     setAllSelected(isChecked);
     onBulkStockUpdate(isChecked);
@@ -60,7 +101,9 @@ function ProductTable({
 
   return (
     <>
-      <button className="create-product">New product</button>
+      <button className="create-product" onClick={openCreateModal}>
+        New product
+      </button>
 
       <table className="product-table">
         <thead>
@@ -68,7 +111,7 @@ function ProductTable({
             <th>
               <input
                 type="checkbox"
-                className="stockHandler"
+                className="stock-handler"
                 checked={allSelected}
                 disabled={loading || products.length === 0}
                 onChange={(e) => handleBulkStock(e.target.checked)}
@@ -83,8 +126,11 @@ function ProductTable({
             <th className="th-name" onClick={() => onSortingColumn("name")}>
               Name {getSortSymbol("name")}
             </th>
-            <th className="th-price" onClick={() => onSortingColumn("price")}>
-              Price {getSortSymbol("price")}
+            <th
+              className="th-price"
+              onClick={() => onSortingColumn("unitPrice")}
+            >
+              Price {getSortSymbol("unitPrice")}
             </th>
             <th
               className="th-date"
@@ -113,7 +159,7 @@ function ProductTable({
                 <td>
                   <input
                     type="checkbox"
-                    className="stockHandler"
+                    className="stock-handler"
                     checked={product.stock === 0}
                     disabled={loading}
                     onChange={(e) =>
@@ -144,14 +190,36 @@ function ProductTable({
                 </td>
                 <td>
                   {/* Action buttons */}
-                  <button className="edit-btn">Edit</button>
-                  <button className="delete-btn">Delete</button>
+                  <button
+                    className="edit-btn"
+                    onClick={() => openEditModal(product)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="delete-btn"
+                    onClick={() => openDeleteModal(product)}
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))
           )}
         </tbody>
       </table>
+
+      <ProductModal
+        isOpen={isModalOpen}
+        modalContent={modalContent}
+        categories={categories}
+        onCreateProduct={onCreateProduct}
+        onEditProduct={onEditProduct}
+        productToEdit={selectedProduct}
+        onDeleteProduct={onDeleteProduct}
+        productToDelete={selectedProduct}
+        onClose={closeModal}
+      ></ProductModal>
     </>
   );
 }

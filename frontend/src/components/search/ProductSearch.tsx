@@ -1,15 +1,11 @@
 import { useState } from "react";
+import type { CategoryOption } from "../../App";
 import "./ProductSearch.css";
 
 export interface SearchData {
   name: string;
   category: string;
   availability: "in-stock" | "out-of-stock" | "";
-}
-
-interface CategoryOption {
-  value: string;
-  label: string;
 }
 
 interface ProductSearchProps {
@@ -56,7 +52,6 @@ function ProductSearch({ onSearch, categories = [] }: ProductSearchProps) {
     <div className="product-search">
       <form onSubmit={handleSubmit} className="search-form">
         <div className="search-fields">
-          {/* Name and Buttons */}
           {/* Name */}
           <div className="input-field">
             <label htmlFor="name">Name</label>

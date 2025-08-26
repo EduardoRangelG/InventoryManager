@@ -1,3 +1,4 @@
+/* New Product styles */
 .create-product {
   font-size: 14px;
   font-weight: bold;  
@@ -15,19 +16,14 @@
   border-color: transparent;
 }
 
+/* Table styles */
 .product-table {
-  width: 100%;
   margin-top: 2%;
-  border-spacing: 0;
   border-collapse: collapse;
-  border-radius: 15px;
-  overflow: hidden;
 }
 
 .product-table th {
   cursor: pointer;
-  white-space: nowrap;
-  padding-right: 10px;
 }
 
 .th-category {
@@ -124,7 +120,7 @@
   color: #319c36;
 }
 
-
+/* Buttons */
 .edit-btn,
 .delete-btn {
   font-size: 14px;

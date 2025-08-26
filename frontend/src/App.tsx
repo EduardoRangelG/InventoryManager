@@ -3,8 +3,11 @@ import type { SearchData } from "./components/search/ProductSearch";
 import ProductTable from "./components/products/ProductTable";
 import {
   getProducts,
+  deleteProduct,
   markProductInStock,
   markProductOutOfStock,
+  createProduct,
+  updateProduct,
 } from "./services/products";
 import "./App.css";
 import { useState, useEffect } from "react";
@@ -14,6 +17,11 @@ import {
   type GetProductsResponse,
 } from "./types/product";
 import type { Product } from "./types/product";
+
+export interface CategoryOption {
+  value: string;
+  label: string;
+}
 
 const stockQuantity: number = 10;
 
@@ -27,9 +35,7 @@ function App() {
     sort: ["name,asc"],
   });
   const [products, setProducts] = useState<Product[]>([]);
-  const [sortCriteria, setSortCriteria] = useState<SortCriteria[]>([
-    { field: "name", direction: "asc" },
-  ]);
+  const [sortCriteria, setSortCriteria] = useState<SortCriteria[]>([]);
   const [loading, setLoading] = useState(false);
 
   const handleSearch = (searchData: SearchData) => {
@@ -39,6 +45,45 @@ function App() {
       availability:
         searchData.availability === "" ? "in-stock" : searchData.availability,
     });
+  };
+
+  const handleCreateProduct = async (product: Omit<Product, "id">) => {
+    try {
+      const newProduct = await createProduct(product);
+
+      setProducts((prevProducts) => [...prevProducts, newProduct]);
+      handleResetSorting();
+      console.log(`Successfuly created product with ID ${newProduct.id}`);
+    } catch (error) {
+      console.error("Error creating product:", error);
+    }
+  };
+
+  const handleEditProduct = async (product: Product) => {
+    try {
+      const { id, ...productData } = product;
+      const updatedProduct = await updateProduct(id, productData);
+
+      setProducts((prevProducts) =>
+        prevProducts.map((p) =>
+          p.id === updatedProduct.id ? updatedProduct : p
+        )
+      );
+      handleResetSorting();
+      console.log(`Successfuly updated product with ID ${product.id}`);
+    } catch (error) {
+      console.error("Error creating product:", error);
+    }
+  };
+
+  const handleDeleteProduct = async (productId: number) => {
+    try {
+      await deleteProduct(productId);
+      handleResetSorting();
+      console.log(`Successfuly deleted product with ID ${productId}`);
+    } catch (error) {
+      console.error(`Error deleting product with ID ${productId}:`, error);
+    }
   };
 
   const handleSortingColumn = (columnName: string) => {
@@ -63,6 +108,10 @@ function App() {
         }
       }
     });
+  };
+
+  const handleResetSorting = () => {
+    setSortCriteria([]);
   };
 
   useEffect(() => {
@@ -141,9 +190,9 @@ function App() {
   };
 
   const categories = [
-    { value: "food", label: "Food" },
-    { value: "clothing", label: "Clothing" },
-    { value: "electronics", label: "Electronics" },
+    { value: "Food", label: "Food" },
+    { value: "Clothing", label: "Clothing" },
+    { value: "Electronics", label: "Electronics" },
   ];
 
   return (
@@ -151,6 +200,10 @@ function App() {
       <ProductSearch onSearch={handleSearch} categories={categories} />
       <ProductTable
         products={products}
+        categories={categories}
+        onCreateProduct={handleCreateProduct}
+        onEditProduct={handleEditProduct}
+        onDeleteProduct={handleDeleteProduct}
         onSortingColumn={handleSortingColumn}
         sortCriteria={sortCriteria}
         onSingleStockUpdate={handleSingleStock}

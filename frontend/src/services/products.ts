@@ -73,7 +73,7 @@ export const createProduct = async (
 // PUT product by ID /products/{id}
 export const updateProduct = async (
   productId: number,
-  updatedProductData: Product
+  updatedProductData: Omit<Product, "id">
 ): Promise<Product> => {
   try {
     const response = await api.put<Product>(
@@ -92,7 +92,7 @@ export const deleteProduct = async (productId: number): Promise<void> => {
   try {
     await api.delete<Product>(`/products/${productId}`);
   } catch (error) {
-    console.error(`Error updating product with ID ${productId}:`, error);
+    console.error(`Error deleting product with ID ${productId}:`, error);
     throw error;
   }
 };
