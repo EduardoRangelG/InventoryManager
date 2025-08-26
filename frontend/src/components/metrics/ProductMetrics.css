@@ -1,0 +1,22 @@
+.product-metrics {
+    display: flex;
+    justify-content: center;
+    margin-top: 3%;
+}
+
+.metrics-table {
+        width: 70%;
+    border-collapse: collapse;
+    border-color: transparent;
+}
+
+.metrics-table th {
+    background-color: #000000;
+    padding: 2%;
+}
+
+.metrics-table td {
+    background-color: #ffffff;
+    color: #000000;
+    padding: 2%;
+}

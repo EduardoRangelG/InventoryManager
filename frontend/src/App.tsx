@@ -26,6 +26,30 @@ export interface CategoryOption {
 
 const stockQuantity: number = 10;
 
+const metricsParams: GetProductsParams = {
+  name: "",
+  category: "",
+  availability: "in-stock",
+  page: 1,
+  limit: 100,
+  sort: ["name,asc"],
+};
+
+export interface InventoryMetrics {
+  totalProducts: number;
+  totalValue: number;
+  averagePrice: number;
+}
+
+export interface CategoryMetrics {
+  [category: string]: InventoryMetrics;
+}
+
+export interface InventoryData {
+  overall: InventoryMetrics;
+  byCategory: CategoryMetrics;
+}
+
 const categories = [
   { value: "Food", label: "Food" },
   { value: "Clothing", label: "Clothing" },
@@ -45,13 +69,23 @@ function App() {
   const [sortCriteria, setSortCriteria] = useState<SortCriteria[]>([]);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [metrics, setMetrics] = useState<InventoryData>({
+    overall: {
+      totalProducts: 0,
+      totalValue: 0,
+      averagePrice: 0,
+    },
+    byCategory: {},
+  });
   const [loading, setLoading] = useState(false);
 
   const handleCreateProduct = async (product: Omit<Product, "id">) => {
     try {
       await createProduct(product);
-
       setSearchParams((prev) => ({ ...prev, page: 1 }));
+
+      await fetchProducts();
+      await handleMetrics();
       handleResetSorting();
       console.log("Successfuly created product");
     } catch (error) {
@@ -64,7 +98,8 @@ function App() {
       const { id, ...productData } = product;
       await updateProduct(id, productData);
 
-      fetchProducts();
+      await fetchProducts();
+      await handleMetrics();
       handleResetSorting();
       console.log(`Successfuly updated product with ID ${product.id}`);
     } catch (error) {
@@ -76,8 +111,8 @@ function App() {
     try {
       await deleteProduct(productId);
 
-      fetchProducts();
-      handleResetSorting();
+      await fetchProducts();
+      await handleResetSorting();
       console.log(`Successfuly deleted product with ID ${productId}`);
     } catch (error) {
       console.error(`Error deleting product with ID ${productId}:`, error);
@@ -135,6 +170,10 @@ function App() {
   useEffect(() => {
     fetchProducts();
   }, [searchParams]);
+
+  useEffect(() => {
+    handleMetrics();
+  }, [products]);
 
   const handleSortingColumn = (columnName: string) => {
     setSortCriteria((prev) => {
@@ -209,6 +248,65 @@ function App() {
     }
   };
 
+  const handleMetrics = async () => {
+    setLoading(true);
+    try {
+      const categoryMetrics: CategoryMetrics = {};
+
+      // Get metrics for each category
+      for (const category of categories) {
+        const paramsForApi = {
+          ...metricsParams,
+          category: category.value,
+          availability: "in-stock" as const,
+        };
+
+        const response: GetProductsResponse = await getProducts(paramsForApi);
+
+        let totalProducts = 0;
+        let totalValue = 0;
+
+        response.content.forEach((product) => {
+          totalProducts++;
+          totalValue += product.unitPrice;
+        });
+
+        const averagePrice = totalProducts > 0 ? totalValue / totalProducts : 0;
+
+        categoryMetrics[category.value] = {
+          totalProducts,
+          totalValue: parseFloat(totalValue.toFixed(2)),
+          averagePrice: parseFloat(averagePrice.toFixed(2)),
+        };
+      }
+
+      // Calculate overall metrics
+      let overallTotalProducts = 0;
+      let overallTotalValue = 0;
+
+      Object.values(categoryMetrics).forEach((categoryMetric) => {
+        overallTotalProducts += categoryMetric.totalProducts;
+        overallTotalValue += categoryMetric.totalValue;
+      });
+
+      const overallAveragePrice =
+        overallTotalProducts > 0 ? overallTotalValue / overallTotalProducts : 0;
+
+      setMetrics({
+        overall: {
+          totalProducts: overallTotalProducts,
+          totalValue: parseFloat(overallTotalValue.toFixed(2)),
+          averagePrice: parseFloat(overallAveragePrice.toFixed(2)),
+        },
+        byCategory: categoryMetrics,
+      });
+    } catch (error) {
+      console.error("Error fetching metrics:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <ProductSearch onSearch={handleSearch} categories={categories} />
@@ -227,7 +325,10 @@ function App() {
         onBulkStockUpdate={handleBulkStock}
         loading={loading}
       />
-      <ProductMetrics></ProductMetrics>
+      <ProductMetrics
+        categories={categories}
+        metrics={metrics}
+      ></ProductMetrics>
     </>
   );
 }
