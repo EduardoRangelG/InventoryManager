@@ -20,6 +20,12 @@ export interface GetProductsResponse {
   content: Product[];
   totalPages: number;
   totalElements: number;
+  number: number;
+  size: number;
+  numberOfElements: number;
+  first: number;
+  last: boolean;
+  empty: boolean;
   totalProductsInStock: number;
   totalInventoryValue: number;
   averageInStockPrice: number;

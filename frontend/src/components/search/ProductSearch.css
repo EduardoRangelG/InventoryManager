@@ -14,7 +14,6 @@
 /* Search fields */
 .search-fields {
   display: grid;
-  gap: 15px;
 }
 
 .input-field,

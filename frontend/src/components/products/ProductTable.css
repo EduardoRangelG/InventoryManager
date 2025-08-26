@@ -19,6 +19,7 @@
 /* Table styles */
 .product-table {
   margin-top: 2%;
+  margin-bottom: 2%;
   border-collapse: collapse;
 }
 
@@ -187,6 +188,52 @@
 
 .high-stock:hover {
   background-color: #cfcece;
+}
+
+/* Pagination controls styles */
+.pagination-btn {
+  background-color: #2882a6;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.pagination-btn:hover,
+.pagination-btn.active {
+  background-color: #216f8d;
+}
+
+.pagination-btn.active {
+  box-shadow: inset 0 0 0 2px #efefef;
+}
+
+.pagination-btn-simple {
+  background-color: #166482;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.pagination-btn-simple:hover {
+  background-color: #124e67;
+}
+
+.pagination-btn-simple:disabled {
+  background-color: #124e67;
+  cursor: not-allowed;
+}
+
+.pagination-btn-first-last {
+  background-color: #10465b;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.pagination-btn-first-last:hover {
+  background-color: #0c3241;
+}
+
+.pagination-btn-first-last:disabled {
+  background-color: #0c3241;
+  cursor: not-allowed;
 }
 
 @media (max-width: 768px) {

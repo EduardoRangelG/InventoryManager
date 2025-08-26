@@ -11,6 +11,9 @@ interface ProductTableProps {
   onCreateProduct: (product: Omit<Product, "id">) => void;
   onEditProduct: (product: Product) => void;
   onDeleteProduct: (productId: number) => void;
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (newPage: number) => void;
   onSortingColumn: (columnName: string) => void;
   sortCriteria: SortCriteria[];
   onSingleStockUpdate: (productId: number, makeOutOfStock: boolean) => void;
@@ -24,6 +27,9 @@ function ProductTable({
   onCreateProduct,
   onEditProduct,
   onDeleteProduct,
+  currentPage,
+  totalPages,
+  onPageChange,
   onSortingColumn,
   sortCriteria,
   onSingleStockUpdate,
@@ -71,6 +77,21 @@ function ProductTable({
 
     setModalContent("");
     setSelectedProduct(null);
+  };
+
+  const getPageNumbers = () => {
+    const pageNumbers = [];
+    const maxPageNumbersToShow = 5;
+    const startPage = Math.max(
+      1,
+      currentPage - Math.floor(maxPageNumbersToShow / 2)
+    );
+    const endPage = Math.min(totalPages, startPage + maxPageNumbersToShow - 1);
+
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(i);
+    }
+    return pageNumbers;
   };
 
   // Stock logic
@@ -208,6 +229,52 @@ function ProductTable({
           )}
         </tbody>
       </table>
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="pagination-controls">
+          <button
+            onClick={() => onPageChange(1)}
+            disabled={currentPage === 1 || loading}
+            className="pagination-btn-first-last"
+          >
+            {"<<"}
+          </button>
+          <button
+            onClick={() => onPageChange(currentPage - 1)}
+            disabled={currentPage === 1 || loading}
+            className="pagination-btn-simple"
+          >
+            {"<"}
+          </button>
+          {getPageNumbers().map((pageNumber) => (
+            <button
+              key={pageNumber}
+              onClick={() => onPageChange(pageNumber)}
+              disabled={loading}
+              className={`pagination-btn ${
+                pageNumber === currentPage ? "active" : ""
+              }`}
+            >
+              {pageNumber}
+            </button>
+          ))}
+          <button
+            onClick={() => onPageChange(currentPage + 1)}
+            disabled={currentPage === totalPages || loading}
+            className="pagination-btn-simple"
+          >
+            {">"}
+          </button>
+          <button
+            onClick={() => onPageChange(totalPages)}
+            disabled={currentPage === totalPages || loading}
+            className="pagination-btn-first-last"
+          >
+            {">>"}
+          </button>
+        </div>
+      )}
 
       <ProductModal
         isOpen={isModalOpen}
