@@ -1,0 +1,110 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: #00000075;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background-color: #ffffff;
+  border-radius: 15px;
+  padding: 40px;
+  max-width: 450px;
+  width: 100%;
+}
+
+/* Modal Inner Content Styles */
+.modal-content-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modal-title {
+  font-size: 30px;
+  font-weight: bold;
+  margin-top: 0%;
+  margin-bottom: 10px;
+  color: #000000;
+}
+
+.modal-text {
+  color: #000000;
+  margin-bottom: 25px;
+}
+
+.input-field,
+.select-field {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+/* Buttons */
+.modal-btns {
+    display: flex;
+    gap: 10px;
+}
+
+.create-product {
+  font-size: 14px;
+  font-weight: bold;  
+  background-color: #019c16;
+  color: #ffffff;
+  margin-right: auto;
+  margin-top: 3%;
+  display: block;
+  transition: background-color 0.3s ease;
+  height: 40px;
+}
+
+.create-product:hover {
+  background-color: #007d11;
+  border-color: transparent;
+}
+
+.modal-save-btn,
+.modal-cancel-btn,
+.modal-delete-btn {
+  font-size: 14px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  height: 40px;
+  margin: 0 5px;
+}
+
+.modal-save-btn {
+  background-color: #007bff;
+  color: #ffffff;
+}
+
+.modal-save-btn:hover {
+  background-color: #0056b3;
+  border-color: transparent;
+}
+
+.modal-cancel-btn {
+  background-color: #5d5d5d;
+  color: #ffffff;
+}
+
+.modal-cancel-btn:hover {
+  background-color: #363636;
+  border-color: transparent;
+}
+
+.modal-delete-btn {
+  background-color: #f10101;
+  color: #ffffff;
+}
+
+.modal-delete-btn:hover {
+  background-color: #b40000;
+  border-color: transparent;
+}
+
+
+@media (max-width: 640px){
+    
+}

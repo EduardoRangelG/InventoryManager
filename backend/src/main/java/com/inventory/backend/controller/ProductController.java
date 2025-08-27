@@ -32,7 +32,7 @@ public class ProductController {
 
     // GET all products /products
     @GetMapping
-    public ResponseEntity<Page<Product>> listProducts(
+    public ResponseEntity<Page<Product>> getProducts(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String category,
             @RequestParam(required = false) Boolean inStock, Pageable pageable) {
@@ -54,30 +54,30 @@ public class ProductController {
         return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
     }
 
-    // PUT product by ID /product/{id}
+    // PUT product by ID /products/{id}
     @PutMapping("/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable Integer id, @Valid @RequestBody Product productDetails) {
         Product updatedProduct = productService.updateProduct(id, productDetails);
         return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
     }
 
-    // DELETE product by ID /product/{id}
+    // DELETE product by ID /products/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<Product> deleteProduct(@PathVariable Integer id) {
         productService.deleteProduct(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    // POST product outofstock by ID /product/{id}/outofstock
+    // POST product outofstock by ID /products/{id}/outofstock
     @PostMapping("/{id}/outofstock")
     public ResponseEntity<Product> markProductOutOfStock(@PathVariable Integer id) {
         Product updatedProduct = productService.markProductOutOfStock(id);
         return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
     }
 
-    // PUT product instock by ID /product/{id}/instock
+    // PUT product instock by ID /products/{id}/instock
     @PutMapping("/{id}/instock")
-    public ResponseEntity<Product> markProductInStock(@PathVariable Integer id, @RequestBody Integer quantity) {
+    public ResponseEntity<Product> markProductInStock(@PathVariable Integer id, @RequestParam Integer quantity) {
         Product updatedProduct = productService.markProductInStock(id, quantity);
         return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
     }

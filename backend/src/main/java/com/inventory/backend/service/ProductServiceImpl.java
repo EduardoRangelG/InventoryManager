@@ -103,50 +103,60 @@ public class ProductServiceImpl implements ProductService {
                     || product.getName().toLowerCase().contains(name.toLowerCase());
             boolean matchesCategory = (category == null || category.isEmpty())
                     || product.getCategory().toLowerCase().contains(category.toLowerCase());
-            boolean matchesInStock = (inStock == null) ||
-                    (inStock && product.getStock() > 0);
+            boolean matchesInStock;
+            if (inStock == null) {
+                matchesInStock = true; // No filter, match all
+            } else if (inStock) {
+                matchesInStock = product.getStock() > 0; // Filter for In Stock (stock > 0)
+            } else {
+                matchesInStock = product.getStock() == 0; // Filter for Out of Stock (stock = 0)
+            }
             return matchesName && matchesCategory && matchesInStock;
         }).collect(Collectors.toList());
 
         // Sorting Logic
-        Comparator<Product> comparator = null;
         if (pageable.getSort().isSorted()) {
-            Optional<Order> orderOptional = pageable.getSort().stream().findFirst();
+            List<Order> orders = pageable.getSort().toList();
+            Comparator<Product> finalComparator = null;
 
-            if (orderOptional.isPresent()) {
-                Order order = orderOptional.get();
+            for (Order order : orders) {
+                Comparator<Product> currentComparator = null;
 
                 switch (order.getProperty()) {
                     case "name":
-                        comparator = Comparator.comparing(Product::getName);
+                        currentComparator = Comparator.comparing(Product::getName);
                         break;
                     case "category":
-                        comparator = Comparator.comparing(Product::getCategory);
+                        currentComparator = Comparator.comparing(Product::getCategory);
                         break;
                     case "unitPrice":
-                        comparator = Comparator.comparing(Product::getUnitPrice);
+                        currentComparator = Comparator.comparing(Product::getUnitPrice);
                         break;
                     case "stock":
-                        comparator = Comparator.comparing(Product::getStock);
+                        currentComparator = Comparator.comparing(Product::getStock);
                         break;
                     case "expirationDate":
-                        comparator = Comparator.comparing(Product::getExpirationDate,
+                        currentComparator = Comparator.comparing(Product::getExpirationDate,
                                 Comparator.nullsLast(LocalDate::compareTo));
                         break;
-                    default:
-                        comparator = Comparator.comparing(Product::getName);
                 }
 
-                if (order.isDescending()) {
-                    comparator = comparator.reversed();
+                if (currentComparator != null) {
+                    if (order.isDescending()) {
+                        currentComparator = currentComparator.reversed();
+                    }
+
+                    if (finalComparator == null) {
+                        finalComparator = currentComparator;
+                    } else {
+                        finalComparator = finalComparator.thenComparing(currentComparator);
+                    }
                 }
             }
-        } else {
-            comparator = null;
-        }
 
-        if (comparator != null) {
-            filteredProducts.sort(comparator);
+            if (finalComparator != null) {
+                filteredProducts.sort(finalComparator);
+            }
         }
 
         // Pagination Logic
