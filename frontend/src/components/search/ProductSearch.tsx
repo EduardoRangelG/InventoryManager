@@ -1,5 +1,5 @@
-import { useState } from "react";
-import type { CategoryOption } from "../../App";
+import { useContext, useState } from "react";
+import { ProductContext } from "../../contexts/ProductContext";
 import "./ProductSearch.css";
 
 export interface SearchData {
@@ -8,12 +8,8 @@ export interface SearchData {
   availability: "in-stock" | "out-of-stock" | "";
 }
 
-interface ProductSearchProps {
-  onSearch: (data: SearchData) => void;
-  categories?: CategoryOption[];
-}
-
-function ProductSearch({ onSearch, categories = [] }: ProductSearchProps) {
+function ProductSearch() {
+  const { categories, onSearch } = useContext(ProductContext);
   const [searchData, setSearchData] = useState<SearchData>({
     name: "",
     category: "",

@@ -1,17 +1,13 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { ProductContext } from "../../../contexts/ProductContext";
 import type { Product } from "../../../types/product";
-import type { CategoryOption } from "../../../App";
 import { capitalizeFirstLetter } from "../../../utils/stringFormatter";
 import "./ProductModal.css";
 
 interface ProductModalProps {
   isOpen: boolean;
   modalContent: string;
-  categories: CategoryOption[];
-  onCreateProduct: (product: Omit<Product, "id">) => void;
-  onEditProduct: (product: Product) => void;
   productToEdit: Product | null;
-  onDeleteProduct: (productId: number) => void;
   productToDelete: Product | null;
   onClose: () => void;
 }
@@ -19,14 +15,13 @@ interface ProductModalProps {
 function ProductModal({
   isOpen,
   modalContent,
-  categories,
-  onCreateProduct,
-  onEditProduct,
   productToEdit,
-  onDeleteProduct,
   productToDelete,
   onClose,
 }: ProductModalProps) {
+  const { categories, onCreateProduct, onEditProduct, onDeleteProduct } =
+    useContext(ProductContext);
+
   const [newProductData, setNewProductData] = useState<Omit<Product, "id">>({
     name: "",
     category: "",
