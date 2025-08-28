@@ -1,43 +1,25 @@
-import { useEffect, useState } from "react";
-import type { Product, SortCriteria } from "../../types/product";
-import type { CategoryOption } from "../../App";
+import { useContext, useEffect, useState } from "react";
+import { ProductContext } from "../../contexts/ProductContext";
+import type { Product } from "../../types/product";
 import { formatUTCDate } from "../../utils/dateFormatter";
 import ProductModal from "./modal/ProductModal";
 import "./ProductTable.css";
 
-interface ProductTableProps {
-  products: Product[];
-  categories: CategoryOption[];
-  onCreateProduct: (product: Omit<Product, "id">) => void;
-  onEditProduct: (product: Product) => void;
-  onDeleteProduct: (productId: number) => void;
-  currentPage: number;
-  totalPages: number;
-  onPageChange: (newPage: number) => void;
-  onSortingColumn: (columnName: string) => void;
-  sortCriteria: SortCriteria[];
-  onSingleStockUpdate: (productId: number, makeOutOfStock: boolean) => void;
-  onBulkStockUpdate: (makeOutOfStock: boolean) => void;
-  loading: boolean;
-}
+function ProductTable() {
+  const {
+    products,
+    currentPage,
+    totalPages,
+    onPageChange,
+    onSortingColumn,
+    sortCriteria,
+    onSingleStockUpdate,
+    onBulkStockUpdate,
+    loading,
+  } = useContext(ProductContext);
 
-function ProductTable({
-  products = [],
-  categories = [],
-  onCreateProduct,
-  onEditProduct,
-  onDeleteProduct,
-  currentPage,
-  totalPages,
-  onPageChange,
-  onSortingColumn,
-  sortCriteria,
-  onSingleStockUpdate,
-  onBulkStockUpdate,
-  loading,
-}: ProductTableProps) {
   const [allSelected, setAllSelected] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false); // null || {...product, type: 'edit' }
   const [modalContent, setModalContent] = useState("");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
@@ -53,7 +35,6 @@ function ProductTable({
   }, [products]);
 
   // Modals logic
-
   const openCreateModal = () => {
     setModalContent("create");
     setSelectedProduct(null);
@@ -279,11 +260,7 @@ function ProductTable({
       <ProductModal
         isOpen={isModalOpen}
         modalContent={modalContent}
-        categories={categories}
-        onCreateProduct={onCreateProduct}
-        onEditProduct={onEditProduct}
         productToEdit={selectedProduct}
-        onDeleteProduct={onDeleteProduct}
         productToDelete={selectedProduct}
         onClose={closeModal}
       ></ProductModal>

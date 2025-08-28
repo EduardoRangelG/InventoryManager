@@ -1,12 +1,9 @@
-import type { CategoryOption, InventoryData } from "../../App";
+import { useContext } from "react";
 import "./ProductMetrics.css";
+import { ProductContext } from "../../contexts/ProductContext";
 
-interface ProductMetricsProps {
-  categories: CategoryOption[];
-  metrics: InventoryData;
-}
-
-function ProductMetrics({ categories, metrics }: ProductMetricsProps) {
+function ProductMetrics() {
+  const { categories, metrics } = useContext(ProductContext);
   return (
     <>
       <div className="product-metrics">
