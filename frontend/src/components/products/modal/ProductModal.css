@@ -38,18 +38,86 @@
 .input-field,
 .select-field {
   width: 100%;
-  margin-bottom: 15px;
+  margin-bottom: 35px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+.input-field label,
+.select-field label {
+  width: 120px;
+  flex-shrink: 0;
+  font-weight: 600;
+  color: #333;
+  text-align: left;
+}
+
+.input-field input,
+.input-field select,
+.select-field input,
+.select-field select {
+  flex: 1;
+  box-sizing: border-box;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  height: 40px; /* Ensure consistent height */
+  width: 100%; /* Ensure consistent width */
+}
+
+.input-field input:focus,
+.input-field select:focus,
+.select-field input:focus,
+.select-field select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px #0077ff5c;
+}
+
+.input-field input::placeholder,
+.select-field input::placeholder {
+  color: #999;
+}
+
+/* Validations */
+.required::after {
+  content: " *";
+  color: #dc3545;
+}
+
+.input-container {
+  width: 100%;
+}
+
+.input-container input,
+.input-container select {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.error-text {
+  color: #dc3545;
+  font-size: 14px;
+  font-weight: 500;
+  position: absolute;
+  top: 100%;
+  left: 130px;
+  margin-top: 5px;
+  white-space: nowrap;
 }
 
 /* Buttons */
 .modal-btns {
-    display: flex;
-    gap: 10px;
+  display: flex;
+  gap: 10px;
 }
 
 .create-product {
   font-size: 14px;
-  font-weight: bold;  
+  font-weight: bold;
   background-color: #019c16;
   color: #ffffff;
   margin-right: auto;
@@ -104,7 +172,5 @@
   border-color: transparent;
 }
 
-
-@media (max-width: 640px){
-    
+@media (max-width: 640px) {
 }

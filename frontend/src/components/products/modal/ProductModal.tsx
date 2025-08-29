@@ -37,12 +37,19 @@ function ProductModal({
     stock: 0,
     expirationDate: "",
   });
+  const [errors, setErrors] = useState({
+    name: "",
+    category: "",
+    unitPrice: "",
+    stock: "",
+  });
 
   useEffect(() => {
     if (productToEdit) {
       setEditProductData(productToEdit);
     }
-  }, [productToEdit]);
+    setErrors({ name: "", category: "", unitPrice: "", stock: "" });
+  }, [productToEdit, modalContent]);
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
@@ -56,6 +63,34 @@ function ProductModal({
     };
   }, [isOpen, onClose]);
 
+  const validateForm = (data: Omit<Product, "id">) => {
+    const newErrors = { name: "", category: "", unitPrice: "", stock: "" };
+    let isValid = true;
+
+    if (!data.name.trim()) {
+      newErrors.name = "Product name is required.";
+      isValid = false;
+    }
+
+    if (!data.category) {
+      newErrors.category = "Category is required.";
+      isValid = false;
+    }
+
+    if (isNaN(data.unitPrice) || data.unitPrice <= 0) {
+      newErrors.unitPrice = "Unit price must be a positive number.";
+      isValid = false;
+    }
+
+    if (isNaN(data.stock) || data.stock < 0) {
+      newErrors.stock = "Stock must be a non-negative number.";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
   const handleNewProductInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -65,6 +100,10 @@ function ProductModal({
     setNewProductData((prev) => ({
       ...prev,
       [name]: parsedValue,
+    }));
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
     }));
   };
 
@@ -78,46 +117,50 @@ function ProductModal({
       ...prev,
       [name]: parsedValue,
     }));
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
   };
 
-  const handleCreateProduct = () => {
-    const productToCreate: Omit<Product, "id"> = {
-      name: capitalizeFirstLetter(newProductData.name),
-      category: newProductData.category,
-      unitPrice: newProductData.unitPrice,
-      stock: newProductData.stock,
-      expirationDate: newProductData.expirationDate,
-    };
-    onCreateProduct(productToCreate);
-    setNewProductData({
-      name: "",
-      category: "",
-      unitPrice: 0,
-      stock: 0,
-      expirationDate: "",
-    });
-    onClose();
-  };
-
-  const handleEditProduct = () => {
-    const productToUpdate: Product = {
-      id: editProductData.id,
-      name: capitalizeFirstLetter(editProductData.name),
-      category: editProductData.category,
-      unitPrice: editProductData.unitPrice,
-      stock: editProductData.stock,
-      expirationDate: editProductData.expirationDate,
-    };
-    onEditProduct(productToUpdate);
-    setEditProductData({
-      id: 0,
-      name: "",
-      category: "",
-      unitPrice: 0,
-      stock: 0,
-      expirationDate: "",
-    });
-    onClose();
+  const handleSave = () => {
+    if (modalContent === "create" && validateForm(newProductData)) {
+      const productToCreate: Omit<Product, "id"> = {
+        name: capitalizeFirstLetter(newProductData.name),
+        category: newProductData.category,
+        unitPrice: newProductData.unitPrice,
+        stock: newProductData.stock,
+        expirationDate: newProductData.expirationDate,
+      };
+      onCreateProduct(productToCreate);
+      setNewProductData({
+        name: "",
+        category: "",
+        unitPrice: 0,
+        stock: 0,
+        expirationDate: "",
+      });
+      onClose();
+    } else if (modalContent === "edit" && validateForm(editProductData)) {
+      const productToUpdate: Product = {
+        id: editProductData.id,
+        name: capitalizeFirstLetter(editProductData.name),
+        category: editProductData.category,
+        unitPrice: editProductData.unitPrice,
+        stock: editProductData.stock,
+        expirationDate: editProductData.expirationDate,
+      };
+      onEditProduct(productToUpdate);
+      setEditProductData({
+        id: 0,
+        name: "",
+        category: "",
+        unitPrice: 0,
+        stock: 0,
+        expirationDate: "",
+      });
+      onClose();
+    }
   };
 
   const handleDeleteProduct = () => {
@@ -137,34 +180,63 @@ function ProductModal({
         onClick={onClose}
       >
         <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-          {/* Create Modal */}
-          {modalContent === "create" && (
+          {/* Create/Edit Modal */}
+          {(modalContent === "create" || modalContent === "edit") && (
             <div className="modal-content-inner">
-              <h2 className="modal-title">Create New Product</h2>
+              <h2 className="modal-title">
+                {modalContent === "create"
+                  ? "Create New Product"
+                  : "Edit Product"}
+              </h2>
               {/* Name */}
               <div className="input-field">
-                <label htmlFor="name">Name</label>
+                <label htmlFor="name" className="required">
+                  Name
+                </label>
                 <input
                   type="text"
                   id="name"
                   name="name"
-                  value={newProductData.name}
-                  onChange={handleNewProductInputChange}
+                  value={
+                    modalContent === "create"
+                      ? newProductData.name
+                      : editProductData.name
+                  }
+                  onChange={
+                    modalContent === "create"
+                      ? handleNewProductInputChange
+                      : handleEditProductInputChange
+                  }
                   placeholder="Enter product name..."
+                  className={errors.name ? "invalid-input" : ""}
                 />
+                {errors.name && (
+                  <span className="error-text">{errors.name}</span>
+                )}
               </div>
 
               {/* Category (Select) */}
               <div className="select-field">
-                <label htmlFor="category">Category</label>
+                <label htmlFor="category" className="required">
+                  Category
+                </label>
                 <select
                   id="category"
                   name="category"
-                  value={newProductData.category}
-                  onChange={handleNewProductInputChange}
+                  value={
+                    modalContent === "create"
+                      ? newProductData.category
+                      : editProductData.category
+                  }
+                  onChange={
+                    modalContent === "create"
+                      ? handleNewProductInputChange
+                      : handleEditProductInputChange
+                  }
+                  className={errors.category ? "invalid-input" : ""}
                 >
                   <option value="" disabled>
-                    Existing categories or create a new one
+                    Select a category
                   </option>
                   {categories.map((cat) => (
                     <option key={cat.value} value={cat.value}>
@@ -172,36 +244,67 @@ function ProductModal({
                     </option>
                   ))}
                 </select>
+                {errors.category && (
+                  <span className="error-text">{errors.category}</span>
+                )}
               </div>
 
               {/* Unit Price */}
               <div className="input-field">
-                <label htmlFor="unitPrice">Unit Price</label>
+                <label htmlFor="unitPrice" className="required">
+                  Unit Price
+                </label>
                 <input
                   type="number"
                   id="unitPrice"
                   name="unitPrice"
-                  value={newProductData.unitPrice}
-                  onChange={handleNewProductInputChange}
+                  value={
+                    modalContent === "create"
+                      ? newProductData.unitPrice
+                      : editProductData.unitPrice
+                  }
+                  onChange={
+                    modalContent === "create"
+                      ? handleNewProductInputChange
+                      : handleEditProductInputChange
+                  }
                   onFocus={(e) => setTimeout(() => e.target.select(), 5)}
                   placeholder="Enter unit price..."
                   min="0"
+                  className={errors.unitPrice ? "invalid-input" : ""}
                 />
+                {errors.unitPrice && (
+                  <span className="error-text">{errors.unitPrice}</span>
+                )}
               </div>
 
               {/* Stock */}
               <div className="input-field">
-                <label htmlFor="stock">Stock</label>
+                <label htmlFor="stock" className="required">
+                  Stock
+                </label>
                 <input
                   type="number"
                   id="stock"
                   name="stock"
-                  value={newProductData.stock}
-                  onChange={handleNewProductInputChange}
+                  value={
+                    modalContent === "create"
+                      ? newProductData.stock
+                      : editProductData.stock
+                  }
+                  onChange={
+                    modalContent === "create"
+                      ? handleNewProductInputChange
+                      : handleEditProductInputChange
+                  }
                   placeholder="Enter stock quantity..."
                   onFocus={(e) => setTimeout(() => e.target.select(), 5)}
                   min="0"
+                  className={errors.stock ? "invalid-input" : ""}
                 />
+                {errors.stock && (
+                  <span className="error-text">{errors.stock}</span>
+                )}
               </div>
 
               {/* Expiration Date (Optional) */}
@@ -211,112 +314,23 @@ function ProductModal({
                   type="date"
                   id="expirationDate"
                   name="expirationDate"
-                  value={newProductData.expirationDate}
-                  onChange={handleNewProductInputChange}
+                  value={
+                    modalContent === "create"
+                      ? newProductData.expirationDate
+                      : editProductData.expirationDate
+                  }
+                  onChange={
+                    modalContent === "create"
+                      ? handleNewProductInputChange
+                      : handleEditProductInputChange
+                  }
                 />
               </div>
 
               <div className="modal-btns">
                 <button
                   className="modal-save-btn"
-                  onClick={handleCreateProduct}
-                  aria-label="Save Product"
-                >
-                  Save
-                </button>
-                <button
-                  className="modal-cancel-btn"
-                  onClick={onClose}
-                  aria-label="Close Modal"
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Edit Modal */}
-          {modalContent === "edit" && (
-            <div className="modal-content-inner">
-              <h2 className="modal-title">Edit Product</h2>
-              {/* Name */}
-              <div className="input-field">
-                <label htmlFor="name">Name</label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={editProductData.name}
-                  onChange={handleEditProductInputChange}
-                  placeholder="Enter product name..."
-                />
-              </div>
-
-              {/* Category (Select) */}
-              <div className="select-field">
-                <label htmlFor="category">Category</label>
-                <select
-                  id="category"
-                  name="category"
-                  value={editProductData.category}
-                  onChange={handleEditProductInputChange}
-                >
-                  <option value="" disabled>
-                    Existing categories or create a new one
-                  </option>
-                  {categories.map((cat) => (
-                    <option key={cat.value} value={cat.value}>
-                      {cat.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Unit Price */}
-              <div className="input-field">
-                <label htmlFor="unitPrice">Unit Price</label>
-                <input
-                  type="number"
-                  id="unitPrice"
-                  name="unitPrice"
-                  value={editProductData.unitPrice}
-                  onChange={handleEditProductInputChange}
-                  onFocus={(e) => setTimeout(() => e.target.select(), 5)}
-                  placeholder="Enter unit price..."
-                  min="0"
-                />
-              </div>
-
-              {/* Stock */}
-              <div className="input-field">
-                <label htmlFor="stock">Stock</label>
-                <input
-                  type="number"
-                  id="stock"
-                  name="stock"
-                  value={editProductData.stock}
-                  onChange={handleEditProductInputChange}
-                  placeholder="Enter stock quantity..."
-                  onFocus={(e) => setTimeout(() => e.target.select(), 5)}
-                  min="0"
-                />
-              </div>
-
-              {/* Expiration Date (Opcional) */}
-              <div className="input-field">
-                <label htmlFor="expirationDate">Expiration Date</label>
-                <input
-                  type="date"
-                  id="expirationDate"
-                  name="expirationDate"
-                  value={editProductData.expirationDate}
-                  onChange={handleEditProductInputChange}
-                />
-              </div>
-              <div className="modal-btns">
-                <button
-                  className="modal-save-btn"
-                  onClick={handleEditProduct}
+                  onClick={handleSave}
                   aria-label="Save Product"
                 >
                   Save

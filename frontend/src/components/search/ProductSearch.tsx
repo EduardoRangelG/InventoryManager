@@ -49,7 +49,7 @@ function ProductSearch() {
       <form onSubmit={handleSubmit} className="search-form">
         <div className="search-fields">
           {/* Name */}
-          <div className="input-field">
+          <div className="input-field-search">
             <label htmlFor="name">Name</label>
             <input
               type="text"
@@ -64,7 +64,7 @@ function ProductSearch() {
           {/* Select fields */}
           <div className="select-fields-container">
             {/* Category */}
-            <div className="select-field">
+            <div className="select-field-search">
               <label htmlFor="category">Category</label>
               <select
                 id="category"
@@ -83,7 +83,7 @@ function ProductSearch() {
 
             <div className="select-buttons-row">
               {/* Availability */}
-              <div className="select-field">
+              <div className="select-field-search">
                 <label htmlFor="availability">Availability</label>
                 <select
                   id="availability"
